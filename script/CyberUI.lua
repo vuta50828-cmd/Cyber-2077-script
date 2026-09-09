@@ -318,16 +318,55 @@ Subtitle.TextColor3 = Config.Muted
 Subtitle.TextXAlignment = Enum.TextXAlignment.Left
 Subtitle.Parent = TopBar
 
+local Minimize = Instance.new("TextButton")
+Minimize.Name = "Minimize"
+Minimize.BackgroundTransparency = 1
+Minimize.Position = UDim2.new(1, -92, 0, 13)
+Minimize.Size = UDim2.fromOffset(35, 35)
+Minimize.Font = Enum.Font.GothamBold
+Minimize.Text = "â"
+Minimize.TextSize = 26
+Minimize.TextColor3 = Config.Text
+Minimize.AutoButtonColor = false
+Minimize.Parent = TopBar
+
 local Close = Instance.new("TextButton")
+Close.Name = "Close"
 Close.BackgroundTransparency = 1
 Close.Position = UDim2.new(1, -50, 0, 13)
 Close.Size = UDim2.fromOffset(35, 35)
 Close.Font = Enum.Font.GothamBold
-Close.Text = "×"
+Close.Text = "Ã"
 Close.TextSize = 26
 Close.TextColor3 = Config.Text
 Close.AutoButtonColor = false
 Close.Parent = TopBar
+
+--==================================================
+-- WINDOW BUTTON HOVER
+--==================================================
+
+local function AddWindowButtonHover(Button, NormalColor, HoverColor)
+
+	Button.MouseEnter:Connect(function()
+		TweenService:Create(
+			Button,
+			TweenInfo.new(0.12),
+			{TextColor3 = HoverColor}
+		):Play()
+	end)
+
+	Button.MouseLeave:Connect(function()
+		TweenService:Create(
+			Button,
+			TweenInfo.new(0.12),
+			{TextColor3 = NormalColor}
+		):Play()
+	end)
+end
+
+AddWindowButtonHover(Minimize, Config.Text, Config.Accent)
+AddWindowButtonHover(Close, Config.Text, Color3.fromRGB(255, 90, 100))
 
 --==================================================
 -- SIDEBAR
@@ -839,9 +878,31 @@ end)
 
 SelectTab(PlayerTab)
 
-PlayerTab:Activate()
+-- Load the default PLAYER tab without trying to fire the signal manually.
+-- MouseButton1Click is an event and cannot be called with :Fire().
 
-PlayerTab.MouseButton1Click:Fire()
+-- Populate the default PLAYER tab on startup.
+ClearContent()
+Header("PLAYER SYSTEM")
+
+Toggle("Sprint", 55, function(state)
+	print("Sprint:", state)
+end)
+
+Toggle("Jump Boost", 110, function(state)
+	print("Jump Boost:", state)
+end)
+
+Slider(
+	"Movement Speed",
+	175,
+	1,
+	100,
+	50,
+	function(value)
+		print("Movement Speed:", value)
+	end
+)
 
 --==================================================
 -- MOBILE CYBER ICON
@@ -857,7 +918,7 @@ OpenButton.Size = UDim2.fromOffset(58, 58)
 OpenButton.BackgroundColor3 = Color3.fromRGB(8, 12, 18)
 OpenButton.BorderSizePixel = 0
 
-OpenButton.Text = "◆"
+OpenButton.Text = "â"
 OpenButton.Font = Enum.Font.GothamBlack
 OpenButton.TextSize = 24
 OpenButton.TextColor3 = Config.Accent
@@ -889,10 +950,19 @@ OpenButton.MouseButton1Click:Connect(function()
 	)
 end)
 
-Close.MouseButton1Click:Connect(function()
+-- â = áº¨N MENU, váº«n giá»¯ icon Cyber Äá» má» láº¡i
+Minimize.MouseButton1Click:Connect(function()
 
 	Main.Visible = false
 	OpenButton.Visible = true
+end)
+
+-- Ã = THOÃT Háº²N GUI
+Close.MouseButton1Click:Connect(function()
+
+	Main.Visible = false
+	OpenButton.Visible = false
+	Gui.Enabled = false
 end)
 
 --==================================================
@@ -1016,6 +1086,3 @@ task.spawn(function()
 		end
 	end
 end)
-
-print("CYBER // 2077 v1.2.0 ONLINE")
-print("NO SAVE / NO DATASTORE")
