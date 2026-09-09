@@ -1,15 +1,17 @@
-## [1.1.0] - 2026-09-09
+## [1.2.0] - 2026-09-09
 
 ### Added
 
-- Cyberpunk loading screen
-- Progress bar
-- Notification system
-- Slider component
+- Mobile cyber icon
 - RGB color picker
-- Neon accent customization
+- Slider system
+- Loading screen
+- Notification system
+- Neon effects
 - Glitch effect
-- Improved mobile touch support
-- Improved animations
-- Version display
-- System status display
+
+### Removed
+
+- Save system
+- Persistent settings
+- DataStore
