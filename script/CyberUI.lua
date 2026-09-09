@@ -938,26 +938,90 @@ IconStroke.Color = Config.Accent
 IconStroke.Thickness = 2
 IconStroke.Parent = OpenButton
 
-OpenButton.MouseButton1Click:Connect(function()
+--==================================================
+-- MOBILE CYBER ICON
+-- TAP = OPEN
+-- DRAG = MOVE
+--==================================================
 
-	Main.Visible = true
-	OpenButton.Visible = false
+local draggingIcon = false
+local movedIcon = false
+local dragStart = nil
+local iconStart = nil
 
-	Notify(
-		"CYBER // 2077",
-		"Interface opened.",
-		2
-	)
+local DRAG_THRESHOLD = 10
+
+OpenButton.InputBegan:Connect(function(input)
+
+	if input.UserInputType == Enum.UserInputType.Touch
+		or input.UserInputType == Enum.UserInputType.MouseButton1 then
+
+		draggingIcon = true
+		movedIcon = false
+		dragStart = input.Position
+		iconStart = OpenButton.Position
+	end
 end)
 
--- â = áº¨N MENU, váº«n giá»¯ icon Cyber Äá» má» láº¡i
+UserInputService.InputChanged:Connect(function(input)
+
+	if not draggingIcon then
+		return
+	end
+
+	if input.UserInputType == Enum.UserInputType.Touch
+		or input.UserInputType == Enum.UserInputType.MouseMovement then
+
+		local delta = input.Position - dragStart
+
+		if math.abs(delta.X) > DRAG_THRESHOLD
+			or math.abs(delta.Y) > DRAG_THRESHOLD then
+
+			movedIcon = true
+		end
+
+		OpenButton.Position = UDim2.new(
+			iconStart.X.Scale,
+			iconStart.X.Offset + delta.X,
+			iconStart.Y.Scale,
+			iconStart.Y.Offset + delta.Y
+		)
+	end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+
+	if input.UserInputType == Enum.UserInputType.Touch
+		or input.UserInputType == Enum.UserInputType.MouseButton1 then
+
+		if draggingIcon and not movedIcon then
+
+			Main.Visible = true
+			OpenButton.Visible = false
+
+			Notify(
+				"CYBER // 2077",
+				"Interface opened.",
+				2
+			)
+		end
+
+		draggingIcon = false
+		dragStart = nil
+		iconStart = nil
+	end
+end)
+
+--==================================================
+-- WINDOW BUTTONS
+--==================================================
+
 Minimize.MouseButton1Click:Connect(function()
 
 	Main.Visible = false
 	OpenButton.Visible = true
 end)
 
--- Ã = THOÃT Háº²N GUI
 Close.MouseButton1Click:Connect(function()
 
 	Main.Visible = false
