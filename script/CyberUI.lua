@@ -1,7 +1,8 @@
 --==================================================
 -- CYBER // 2077
--- Version 1.1
--- Roblox Studio UI Framework
+-- Version 1.2.0
+-- Roblox Studio UI
+-- NO SAVE / NO DATASTORE
 --==================================================
 
 local Players = game:GetService("Players")
@@ -11,11 +12,11 @@ local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 
 --==================================================
--- CONFIG
+-- DEFAULT SETTINGS
 --==================================================
 
 local Config = {
-	Version = "1.1.0",
+	Version = "1.2.0",
 
 	Accent = Color3.fromRGB(0, 255, 220),
 
@@ -26,8 +27,8 @@ local Config = {
 	Text = Color3.fromRGB(235, 240, 245),
 	Muted = Color3.fromRGB(125, 135, 150),
 
-	Animations = true,
 	Notifications = true,
+	Animations = true,
 	Glitch = true,
 }
 
@@ -43,14 +44,14 @@ Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 Gui.Parent = player:WaitForChild("PlayerGui")
 
 --==================================================
--- NOTIFICATION SYSTEM
+-- NOTIFICATION HOLDER
 --==================================================
 
 local NotificationHolder = Instance.new("Frame")
 NotificationHolder.Name = "Notifications"
 NotificationHolder.AnchorPoint = Vector2.new(1, 1)
-NotificationHolder.Position = UDim2.new(1, -20, 1, -20)
-NotificationHolder.Size = UDim2.fromOffset(320, 400)
+NotificationHolder.Position = UDim2.new(1, -18, 1, -18)
+NotificationHolder.Size = UDim2.fromOffset(310, 350)
 NotificationHolder.BackgroundTransparency = 1
 NotificationHolder.Parent = Gui
 
@@ -69,7 +70,7 @@ local function Notify(title, message, duration)
 	duration = duration or 3
 
 	local frame = Instance.new("Frame")
-	frame.Size = UDim2.fromOffset(300, 70)
+	frame.Size = UDim2.fromOffset(295, 68)
 	frame.BackgroundColor3 = Config.Panel
 	frame.BorderSizePixel = 0
 	frame.Parent = NotificationHolder
@@ -80,33 +81,33 @@ local function Notify(title, message, duration)
 
 	local stroke = Instance.new("UIStroke")
 	stroke.Color = Config.Accent
-	stroke.Thickness = 1
+	stroke.Thickness = 1.5
 	stroke.Parent = frame
 
 	local titleLabel = Instance.new("TextLabel")
 	titleLabel.BackgroundTransparency = 1
-	titleLabel.Position = UDim2.fromOffset(14, 8)
-	titleLabel.Size = UDim2.new(1, -28, 0, 20)
+	titleLabel.Position = UDim2.fromOffset(12, 7)
+	titleLabel.Size = UDim2.new(1, -24, 0, 20)
 	titleLabel.Font = Enum.Font.GothamBold
 	titleLabel.Text = title
-	titleLabel.TextSize = 13
+	titleLabel.TextSize = 12
 	titleLabel.TextColor3 = Config.Accent
 	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 	titleLabel.Parent = frame
 
 	local messageLabel = Instance.new("TextLabel")
 	messageLabel.BackgroundTransparency = 1
-	messageLabel.Position = UDim2.fromOffset(14, 31)
-	messageLabel.Size = UDim2.new(1, -28, 0, 30)
+	messageLabel.Position = UDim2.fromOffset(12, 30)
+	messageLabel.Size = UDim2.new(1, -24, 0, 28)
 	messageLabel.Font = Enum.Font.Gotham
 	messageLabel.Text = message
-	messageLabel.TextSize = 11
+	messageLabel.TextSize = 10
 	messageLabel.TextColor3 = Config.Text
 	messageLabel.TextWrapped = true
 	messageLabel.TextXAlignment = Enum.TextXAlignment.Left
 	messageLabel.Parent = frame
 
-	frame.Position = UDim2.new(1, 330, 0, 0)
+	frame.Position = UDim2.new(1, 320, 0, 0)
 
 	TweenService:Create(
 		frame,
@@ -116,13 +117,13 @@ local function Notify(title, message, duration)
 
 	task.delay(duration, function()
 
-		if frame and frame.Parent then
+		if frame.Parent then
 
 			local tween = TweenService:Create(
 				frame,
 				TweenInfo.new(0.3),
 				{
-					Position = UDim2.new(1, 330, 0, 0),
+					Position = UDim2.new(1, 320, 0, 0),
 					BackgroundTransparency = 1
 				}
 			)
@@ -154,7 +155,7 @@ LoadingTitle.Size = UDim2.fromOffset(500, 60)
 LoadingTitle.BackgroundTransparency = 1
 LoadingTitle.Font = Enum.Font.GothamBlack
 LoadingTitle.Text = "CYBER // 2077"
-LoadingTitle.TextSize = 38
+LoadingTitle.TextSize = 36
 LoadingTitle.TextColor3 = Config.Accent
 LoadingTitle.ZIndex = 101
 LoadingTitle.Parent = Loading
@@ -165,8 +166,8 @@ LoadingSub.Position = UDim2.fromScale(0.5, 0.51)
 LoadingSub.Size = UDim2.fromOffset(500, 30)
 LoadingSub.BackgroundTransparency = 1
 LoadingSub.Font = Enum.Font.Code
-LoadingSub.Text = "INITIALIZING NEURAL INTERFACE..."
-LoadingSub.TextSize = 12
+LoadingSub.Text = "INITIALIZING..."
+LoadingSub.TextSize = 11
 LoadingSub.TextColor3 = Config.Muted
 LoadingSub.ZIndex = 101
 LoadingSub.Parent = Loading
@@ -180,10 +181,6 @@ BarBackground.BorderSizePixel = 0
 BarBackground.ZIndex = 101
 BarBackground.Parent = Loading
 
-local BarCorner = Instance.new("UICorner")
-BarCorner.CornerRadius = UDim.new(1, 0)
-BarCorner.Parent = BarBackground
-
 local Bar = Instance.new("Frame")
 Bar.Size = UDim2.new(0, 0, 1, 0)
 Bar.BackgroundColor3 = Config.Accent
@@ -191,71 +188,67 @@ Bar.BorderSizePixel = 0
 Bar.ZIndex = 102
 Bar.Parent = BarBackground
 
-local BarCorner2 = Instance.new("UICorner")
-BarCorner2.CornerRadius = UDim.new(1, 0)
-BarCorner2.Parent = Bar
-
-local LoadingPercent = Instance.new("TextLabel")
-LoadingPercent.AnchorPoint = Vector2.new(0.5, 0.5)
-LoadingPercent.Position = UDim2.fromScale(0.5, 0.63)
-LoadingPercent.Size = UDim2.fromOffset(100, 25)
-LoadingPercent.BackgroundTransparency = 1
-LoadingPercent.Font = Enum.Font.Code
-LoadingPercent.Text = "0%"
-LoadingPercent.TextSize = 11
-LoadingPercent.TextColor3 = Config.Text
-LoadingPercent.ZIndex = 101
-LoadingPercent.Parent = Loading
+local Percent = Instance.new("TextLabel")
+Percent.AnchorPoint = Vector2.new(0.5, 0.5)
+Percent.Position = UDim2.fromScale(0.5, 0.63)
+Percent.Size = UDim2.fromOffset(100, 25)
+Percent.BackgroundTransparency = 1
+Percent.Font = Enum.Font.Code
+Percent.Text = "0%"
+Percent.TextSize = 11
+Percent.TextColor3 = Config.Text
+Percent.ZIndex = 101
+Percent.Parent = Loading
 
 task.spawn(function()
 
 	for i = 0, 100 do
 
 		Bar.Size = UDim2.new(i / 100, 0, 1, 0)
-		LoadingPercent.Text = tostring(i) .. "%"
+		Percent.Text = i .. "%"
 
-		if i < 25 then
-			LoadingSub.Text = "INITIALIZING NEURAL INTERFACE..."
-		elseif i < 50 then
-			LoadingSub.Text = "LOADING CYBER MODULES..."
-		elseif i < 75 then
-			LoadingSub.Text = "CONNECTING SYSTEMS..."
+		if i < 30 then
+			LoadingSub.Text = "INITIALIZING..."
+		elseif i < 60 then
+			LoadingSub.Text = "LOADING MODULES..."
+		elseif i < 90 then
+			LoadingSub.Text = "CONNECTING..."
 		else
 			LoadingSub.Text = "SYSTEM READY..."
 		end
 
-		task.wait(0.015)
+		task.wait(0.012)
 	end
 
-	task.wait(0.3)
+	task.wait(0.25)
 
 	TweenService:Create(
 		Loading,
-		TweenInfo.new(0.5),
+		TweenInfo.new(0.45),
 		{BackgroundTransparency = 1}
 	):Play()
 
 	TweenService:Create(
 		LoadingTitle,
-		TweenInfo.new(0.4),
+		TweenInfo.new(0.35),
 		{TextTransparency = 1}
 	):Play()
 
 	TweenService:Create(
 		LoadingSub,
-		TweenInfo.new(0.4),
+		TweenInfo.new(0.35),
 		{TextTransparency = 1}
 	):Play()
 
 	TweenService:Create(
 		BarBackground,
-		TweenInfo.new(0.4),
+		TweenInfo.new(0.35),
 		{BackgroundTransparency = 1}
 	):Play()
 
 	TweenService:Create(
-		LoadingPercent,
-		TweenInfo.new(0.4),
+		Percent,
+		TweenInfo.new(0.35),
 		{TextTransparency = 1}
 	):Play()
 
@@ -265,13 +258,13 @@ task.spawn(function()
 
 	Notify(
 		"CYBER // 2077",
-		"Neural interface online.",
+		"Interface online.",
 		3
 	)
 end)
 
 --==================================================
--- MAIN WINDOW
+-- MAIN
 --==================================================
 
 local Main = Instance.new("Frame")
@@ -282,7 +275,6 @@ Main.Size = UDim2.fromOffset(680, 430)
 Main.BackgroundColor3 = Config.Background
 Main.BorderSizePixel = 0
 Main.ClipsDescendants = true
-Main.Visible = true
 Main.Parent = Gui
 
 local MainCorner = Instance.new("UICorner")
@@ -292,7 +284,6 @@ MainCorner.Parent = Main
 local MainStroke = Instance.new("UIStroke")
 MainStroke.Color = Config.Accent
 MainStroke.Thickness = 1.5
-MainStroke.Transparency = 0.15
 MainStroke.Parent = Main
 
 --==================================================
@@ -327,10 +318,6 @@ Subtitle.TextColor3 = Config.Muted
 Subtitle.TextXAlignment = Enum.TextXAlignment.Left
 Subtitle.Parent = TopBar
 
---==================================================
--- CLOSE
---==================================================
-
 local Close = Instance.new("TextButton")
 Close.BackgroundTransparency = 1
 Close.Position = UDim2.new(1, -50, 0, 13)
@@ -341,24 +328,6 @@ Close.TextSize = 26
 Close.TextColor3 = Config.Text
 Close.AutoButtonColor = false
 Close.Parent = TopBar
-
-Close.MouseEnter:Connect(function()
-	Close.TextColor3 = Config.Accent
-end)
-
-Close.MouseLeave:Connect(function()
-	Close.TextColor3 = Config.Text
-end)
-
-Close.MouseButton1Click:Connect(function()
-	Main.Visible = false
-
-	Notify(
-		"INTERFACE",
-		"Interface hidden. Press RightShift to reopen.",
-		3
-	)
-end)
 
 --==================================================
 -- SIDEBAR
@@ -371,15 +340,15 @@ Sidebar.BackgroundColor3 = Config.PanelDark
 Sidebar.BorderSizePixel = 0
 Sidebar.Parent = Main
 
-local SidebarPadding = Instance.new("UIPadding")
-SidebarPadding.PaddingTop = UDim.new(0, 15)
-SidebarPadding.PaddingLeft = UDim.new(0, 12)
-SidebarPadding.PaddingRight = UDim.new(0, 12)
-SidebarPadding.Parent = Sidebar
+local Padding = Instance.new("UIPadding")
+Padding.PaddingTop = UDim.new(0, 15)
+Padding.PaddingLeft = UDim.new(0, 12)
+Padding.PaddingRight = UDim.new(0, 12)
+Padding.Parent = Sidebar
 
-local SidebarLayout = Instance.new("UIListLayout")
-SidebarLayout.Padding = UDim.new(0, 7)
-SidebarLayout.Parent = Sidebar
+local Layout = Instance.new("UIListLayout")
+Layout.Padding = UDim.new(0, 7)
+Layout.Parent = Sidebar
 
 --==================================================
 -- CONTENT
@@ -397,10 +366,6 @@ local function ClearContent()
 		child:Destroy()
 	end
 end
-
---==================================================
--- HEADER
---==================================================
 
 local function Header(text)
 
@@ -441,54 +406,18 @@ local function Toggle(text, y, callback)
 	corner.CornerRadius = UDim.new(0, 7)
 	corner.Parent = button
 
-	local stroke = Instance.new("UIStroke")
-	stroke.Color = Color3.fromRGB(40, 45, 55)
-	stroke.Transparency = 0.3
-	stroke.Parent = button
-
 	local enabled = false
-
-	button.MouseEnter:Connect(function()
-
-		TweenService:Create(
-			button,
-			TweenInfo.new(0.15),
-			{
-				BackgroundColor3 = Color3.fromRGB(20, 24, 33)
-			}
-		):Play()
-	end)
-
-	button.MouseLeave:Connect(function()
-
-		TweenService:Create(
-			button,
-			TweenInfo.new(0.15),
-			{
-				BackgroundColor3 = Config.Panel
-			}
-		):Play()
-	end)
 
 	button.MouseButton1Click:Connect(function()
 
 		enabled = not enabled
 
 		if enabled then
-
-			button.Text =
-				"  " .. text .. "                         ON"
-
+			button.Text = "  " .. text .. "                         ON"
 			button.TextColor3 = Config.Accent
-			stroke.Color = Config.Accent
-
 		else
-
-			button.Text =
-				"  " .. text .. "                         OFF"
-
+			button.Text = "  " .. text .. "                         OFF"
 			button.TextColor3 = Config.Muted
-			stroke.Color = Color3.fromRGB(40, 45, 55)
 		end
 
 		if callback then
@@ -532,7 +461,6 @@ local function Slider(text, y, min, max, default, callback)
 	valueLabel.Position = UDim2.new(0.7, 0, 0, 7)
 	valueLabel.Size = UDim2.new(0.25, 0, 0, 20)
 	valueLabel.Font = Enum.Font.Code
-	valueLabel.Text = tostring(default)
 	valueLabel.TextSize = 11
 	valueLabel.TextColor3 = Config.Accent
 	valueLabel.TextXAlignment = Enum.TextXAlignment.Right
@@ -545,18 +473,10 @@ local function Slider(text, y, min, max, default, callback)
 	barBackground.BorderSizePixel = 0
 	barBackground.Parent = holder
 
-	local barCorner = Instance.new("UICorner")
-	barCorner.CornerRadius = UDim.new(1, 0)
-	barCorner.Parent = barBackground
-
 	local bar = Instance.new("Frame")
 	bar.BackgroundColor3 = Config.Accent
 	bar.BorderSizePixel = 0
 	bar.Parent = barBackground
-
-	local barCorner2 = Instance.new("UICorner")
-	barCorner2.CornerRadius = UDim.new(1, 0)
-	barCorner2.Parent = bar
 
 	local dragging = false
 
@@ -564,14 +484,10 @@ local function Slider(text, y, min, max, default, callback)
 
 		value = math.clamp(value, min, max)
 
-		local percent =
-			(value - min) / (max - min)
+		local percent = (value - min) / (max - min)
 
-		bar.Size =
-			UDim2.new(percent, 0, 1, 0)
-
-		valueLabel.Text =
-			tostring(math.floor(value))
+		bar.Size = UDim2.new(percent, 0, 1, 0)
+		valueLabel.Text = tostring(math.floor(value))
 
 		if callback then
 			callback(value)
@@ -580,19 +496,14 @@ local function Slider(text, y, min, max, default, callback)
 
 	local function Update(input)
 
-		local x =
-			math.clamp(
-				input.Position.X -
-				barBackground.AbsolutePosition.X,
-				0,
-				barBackground.AbsoluteSize.X
-			)
+		local percent = math.clamp(
+			(input.Position.X - barBackground.AbsolutePosition.X)
+			/ barBackground.AbsoluteSize.X,
+			0,
+			1
+		)
 
-		local percent =
-			x / barBackground.AbsoluteSize.X
-
-		local value =
-			min + ((max - min) * percent)
+		local value = min + ((max - min) * percent)
 
 		SetValue(value)
 	end
@@ -609,12 +520,10 @@ local function Slider(text, y, min, max, default, callback)
 
 	UserInputService.InputChanged:Connect(function(input)
 
-		if not dragging then
-			return
-		end
-
-		if input.UserInputType == Enum.UserInputType.MouseMovement
-			or input.UserInputType == Enum.UserInputType.Touch then
+		if dragging and (
+			input.UserInputType == Enum.UserInputType.MouseMovement
+			or input.UserInputType == Enum.UserInputType.Touch
+		) then
 
 			Update(input)
 		end
@@ -630,15 +539,91 @@ local function Slider(text, y, min, max, default, callback)
 	end)
 
 	SetValue(default)
-
-	return holder
 end
 
 --==================================================
--- RGB COLOR PICKER
+-- RGB PICKER
 --==================================================
 
-local function ColorPicker(y, callback)
+local function RGBSlider(parent, name, y, value, callback)
+
+	local slider = Instance.new("Frame")
+	slider.Position = UDim2.fromOffset(12, y)
+	slider.Size = UDim2.new(1, -24, 0, 22)
+	slider.BackgroundColor3 = Color3.fromRGB(30, 34, 42)
+	slider.BorderSizePixel = 0
+	slider.Parent = parent
+
+	local label = Instance.new("TextLabel")
+	label.BackgroundTransparency = 1
+	label.Position = UDim2.fromOffset(8, 0)
+	label.Size = UDim2.fromOffset(30, 22)
+	label.Font = Enum.Font.Code
+	label.Text = name
+	label.TextSize = 11
+	label.TextColor3 = Config.Text
+	label.Parent = slider
+
+	local valueText = Instance.new("TextLabel")
+	valueText.BackgroundTransparency = 1
+	valueText.Position = UDim2.new(1, -50, 0, 0)
+	valueText.Size = UDim2.fromOffset(42, 22)
+	valueText.Font = Enum.Font.Code
+	valueText.Text = tostring(value)
+	valueText.TextSize = 10
+	valueText.TextColor3 = Config.Accent
+	valueText.Parent = slider
+
+	local dragging = false
+
+	local function Update(input)
+
+		local percent = math.clamp(
+			(input.Position.X - slider.AbsolutePosition.X)
+			/ slider.AbsoluteSize.X,
+			0,
+			1
+		)
+
+		local newValue = math.floor(percent * 255)
+
+		valueText.Text = tostring(newValue)
+
+		callback(newValue)
+	end
+
+	slider.InputBegan:Connect(function(input)
+
+		if input.UserInputType == Enum.UserInputType.MouseButton1
+			or input.UserInputType == Enum.UserInputType.Touch then
+
+			dragging = true
+			Update(input)
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(input)
+
+		if dragging and (
+			input.UserInputType == Enum.UserInputType.MouseMovement
+			or input.UserInputType == Enum.UserInputType.Touch
+		) then
+
+			Update(input)
+		end
+	end)
+
+	UserInputService.InputEnded:Connect(function(input)
+
+		if input.UserInputType == Enum.UserInputType.MouseButton1
+			or input.UserInputType == Enum.UserInputType.Touch then
+
+			dragging = false
+		end
+	end)
+end
+
+local function ColorPicker(y)
 
 	local holder = Instance.new("Frame")
 	holder.Position = UDim2.fromOffset(10, y)
@@ -653,7 +638,7 @@ local function ColorPicker(y, callback)
 
 	local title = Instance.new("TextLabel")
 	title.BackgroundTransparency = 1
-	title.Position = UDim2.fromOffset(12, 8)
+	title.Position = UDim2.fromOffset(12, 6)
 	title.Size = UDim2.new(1, -24, 0, 20)
 	title.Font = Enum.Font.GothamBold
 	title.Text = "RGB ACCENT"
@@ -662,127 +647,49 @@ local function ColorPicker(y, callback)
 	title.TextXAlignment = Enum.TextXAlignment.Left
 	title.Parent = holder
 
-	local values = {
-		R = 0,
-		G = 255,
-		B = 220
-	}
+	local R, G, B = 0, 255, 220
 
 	local function Update()
 
-		local color = Color3.fromRGB(
-			values.R,
-			values.G,
-			values.B
-		)
+		Config.Accent = Color3.fromRGB(R, G, B)
 
-		Config.Accent = color
+		MainStroke.Color = Config.Accent
+		Title.TextColor3 = Config.Accent
 
-		MainStroke.Color = color
-		Title.TextColor3 = color
+		for _, obj in ipairs(Content:GetDescendants()) do
 
-		if callback then
-			callback(color)
+			if obj:IsA("TextLabel") and obj.Text == "RGB ACCENT" then
+				obj.TextColor3 = Config.Accent
+			end
 		end
 	end
 
-	local function RGBSlider(name, y2, key)
+	RGBSlider(holder, "R", 32, R, function(v)
+		R = v
+		Update()
+	end)
 
-		local slider = Instance.new("TextButton")
-		slider.Position = UDim2.fromOffset(12, y2)
-		slider.Size = UDim2.new(1, -24, 0, 25)
-		slider.BackgroundColor3 = Color3.fromRGB(30, 34, 42)
-		slider.BorderSizePixel = 0
-		slider.Text = ""
-		slider.AutoButtonColor = false
-		slider.Parent = holder
+	RGBSlider(holder, "G", 62, G, function(v)
+		G = v
+		Update()
+	end)
 
-		local label = Instance.new("TextLabel")
-		label.BackgroundTransparency = 1
-		label.Position = UDim2.fromOffset(8, 0)
-		label.Size = UDim2.fromOffset(25, 25)
-		label.Font = Enum.Font.Code
-		label.Text = name
-		label.TextSize = 11
-		label.TextColor3 = Config.Text
-		label.Parent = slider
-
-		local value = Instance.new("TextLabel")
-		value.BackgroundTransparency = 1
-		value.Position = UDim2.new(1, -50, 0, 0)
-		value.Size = UDim2.fromOffset(40, 25)
-		value.Font = Enum.Font.Code
-		value.Text = tostring(values[key])
-		value.TextSize = 10
-		value.TextColor3 = Config.Accent
-		value.Parent = slider
-
-		local dragging = false
-
-		local function update(input)
-
-			local percent =
-				math.clamp(
-					(input.Position.X - slider.AbsolutePosition.X)
-					/ slider.AbsoluteSize.X,
-					0,
-					1
-				)
-
-			values[key] = math.floor(percent * 255)
-
-			value.Text = tostring(values[key])
-
-			Update()
-		end
-
-		slider.InputBegan:Connect(function(input)
-
-			if input.UserInputType == Enum.UserInputType.MouseButton1
-				or input.UserInputType == Enum.UserInputType.Touch then
-
-				dragging = true
-				update(input)
-			end
-		end)
-
-		UserInputService.InputChanged:Connect(function(input)
-
-			if dragging then
-
-				if input.UserInputType == Enum.UserInputType.MouseMovement
-					or input.UserInputType == Enum.UserInputType.Touch then
-
-					update(input)
-				end
-			end
-		end)
-
-		UserInputService.InputEnded:Connect(function(input)
-
-			if input.UserInputType == Enum.UserInputType.MouseButton1
-				or input.UserInputType == Enum.UserInputType.Touch then
-
-				dragging = false
-			end
-		end)
-	end
-
-	RGBSlider("R", 32, "R")
-	RGBSlider("G", 62, "G")
-	RGBSlider("B", 92, "B")
+	RGBSlider(holder, "B", 92, B, function(v)
+		B = v
+		Update()
+	end)
 end
 
 --==================================================
--- TAB SYSTEM
+-- TABS
 --==================================================
 
 local CurrentTab
 
-local function Tab(name)
+local function CreateTab(name)
 
 	local button = Instance.new("TextButton")
-	button.Name = name
+
 	button.Size = UDim2.new(1, 0, 0, 43)
 	button.BackgroundColor3 = Config.Panel
 	button.BorderSizePixel = 0
@@ -797,40 +704,26 @@ local function Tab(name)
 	corner.CornerRadius = UDim.new(0, 6)
 	corner.Parent = button
 
-	button.MouseEnter:Connect(function()
-
-		if CurrentTab ~= button then
-			button.TextColor3 = Config.Text
-		end
-	end)
-
-	button.MouseLeave:Connect(function()
-
-		if CurrentTab ~= button then
-			button.TextColor3 = Config.Muted
-		end
-	end)
-
 	return button
 end
 
-local PlayerTab = Tab("PLAYER")
-local VisualTab = Tab("VISUAL")
-local MiscTab = Tab("MISC")
-local SettingsTab = Tab("SETTINGS")
+local PlayerTab = CreateTab("PLAYER")
+local VisualTab = CreateTab("VISUAL")
+local MiscTab = CreateTab("MISC")
+local SettingsTab = CreateTab("SETTINGS")
 
-local function SelectTab(button)
+local function SelectTab(tab)
 
 	if CurrentTab then
 		CurrentTab.TextColor3 = Config.Muted
 	end
 
-	CurrentTab = button
-	button.TextColor3 = Config.Accent
+	CurrentTab = tab
+	tab.TextColor3 = Config.Accent
 end
 
 --==================================================
--- PLAYER
+-- PLAYER TAB
 --==================================================
 
 PlayerTab.MouseButton1Click:Connect(function()
@@ -841,14 +734,10 @@ PlayerTab.MouseButton1Click:Connect(function()
 	Header("PLAYER SYSTEM")
 
 	Toggle("Sprint", 55, function(state)
-
-		-- Add your own experience's sprint logic here.
 		print("Sprint:", state)
 	end)
 
 	Toggle("Jump Boost", 110, function(state)
-
-		-- Add your own experience's jump logic here.
 		print("Jump Boost:", state)
 	end)
 
@@ -859,14 +748,13 @@ PlayerTab.MouseButton1Click:Connect(function()
 		100,
 		50,
 		function(value)
-
 			print("Movement Speed:", value)
 		end
 	)
 end)
 
 --==================================================
--- VISUAL
+-- VISUAL TAB
 --==================================================
 
 VisualTab.MouseButton1Click:Connect(function()
@@ -877,32 +765,18 @@ VisualTab.MouseButton1Click:Connect(function()
 	Header("VISUAL SYSTEM")
 
 	Toggle("Neon Glow", 55, function(state)
-
-		Config.Glow = state
-
 		print("Neon Glow:", state)
 	end)
 
 	Toggle("Glitch FX", 110, function(state)
-
 		Config.Glitch = state
-
-		print("Glitch FX:", state)
 	end)
 
-	ColorPicker(175, function(color)
-
-		print(
-			"Accent:",
-			math.floor(color.R * 255),
-			math.floor(color.G * 255),
-			math.floor(color.B * 255)
-		)
-	end)
+	ColorPicker(175)
 end)
 
 --==================================================
--- MISC
+-- MISC TAB
 --==================================================
 
 MiscTab.MouseButton1Click:Connect(function()
@@ -913,35 +787,20 @@ MiscTab.MouseButton1Click:Connect(function()
 	Header("SYSTEM")
 
 	Toggle("Notifications", 55, function(state)
-
 		Config.Notifications = state
-
-		if state then
-			Notify(
-				"SYSTEM",
-				"Notifications enabled.",
-				2
-			)
-		end
 	end)
 
-	Toggle("Debug Mode", 110, function(state)
-
-		Config.Debug = state
-
-		print("Debug:", state)
-	end)
-
-	Toggle("UI Animations", 165, function(state)
-
+	Toggle("UI Animations", 110, function(state)
 		Config.Animations = state
+	end)
 
-		print("Animations:", state)
+	Toggle("Debug Mode", 165, function(state)
+		print("Debug Mode:", state)
 	end)
 end)
 
 --==================================================
--- SETTINGS
+-- SETTINGS TAB
 --==================================================
 
 SettingsTab.MouseButton1Click:Connect(function()
@@ -972,44 +831,102 @@ SettingsTab.MouseButton1Click:Connect(function()
 	status.TextColor3 = Config.Text
 	status.TextXAlignment = Enum.TextXAlignment.Left
 	status.Parent = Content
-
-	Toggle("Interface Sound", 130, function(state)
-
-		print("Interface Sound:", state)
-	end)
 end)
 
 --==================================================
 -- DEFAULT TAB
 --==================================================
 
-PlayerTab:Activate()
-
 SelectTab(PlayerTab)
 
-ClearContent()
+PlayerTab:Activate()
 
-Header("PLAYER SYSTEM")
+PlayerTab.MouseButton1Click:Fire()
 
-Toggle("Sprint", 55, function(state)
-	print("Sprint:", state)
+--==================================================
+-- MOBILE CYBER ICON
+--==================================================
+
+local OpenButton = Instance.new("TextButton")
+
+OpenButton.Name = "CyberIcon"
+OpenButton.AnchorPoint = Vector2.new(1, 1)
+OpenButton.Position = UDim2.new(1, -18, 1, -18)
+OpenButton.Size = UDim2.fromOffset(58, 58)
+
+OpenButton.BackgroundColor3 = Color3.fromRGB(8, 12, 18)
+OpenButton.BorderSizePixel = 0
+
+OpenButton.Text = "◆"
+OpenButton.Font = Enum.Font.GothamBlack
+OpenButton.TextSize = 24
+OpenButton.TextColor3 = Config.Accent
+
+OpenButton.AutoButtonColor = false
+OpenButton.Visible = false
+OpenButton.ZIndex = 50
+
+OpenButton.Parent = Gui
+
+local IconCorner = Instance.new("UICorner")
+IconCorner.CornerRadius = UDim.new(1, 0)
+IconCorner.Parent = OpenButton
+
+local IconStroke = Instance.new("UIStroke")
+IconStroke.Color = Config.Accent
+IconStroke.Thickness = 2
+IconStroke.Parent = OpenButton
+
+OpenButton.MouseButton1Click:Connect(function()
+
+	Main.Visible = true
+	OpenButton.Visible = false
+
+	Notify(
+		"CYBER // 2077",
+		"Interface opened.",
+		2
+	)
 end)
 
-Toggle("Jump Boost", 110, function(state)
-	print("Jump Boost:", state)
+Close.MouseButton1Click:Connect(function()
+
+	Main.Visible = false
+	OpenButton.Visible = true
 end)
 
-Slider(
-	"Movement Speed",
-	175,
-	1,
-	100,
-	50,
-	function(value)
+--==================================================
+-- MOBILE ICON PULSE
+--==================================================
 
-		print("Movement Speed:", value)
+task.spawn(function()
+
+	while task.wait(1) do
+
+		if OpenButton.Visible then
+
+			TweenService:Create(
+				IconStroke,
+				TweenInfo.new(0.5),
+				{
+					Transparency = 0.55,
+					Thickness = 3
+				}
+			):Play()
+
+			task.wait(0.5)
+
+			TweenService:Create(
+				IconStroke,
+				TweenInfo.new(0.5),
+				{
+					Transparency = 0,
+					Thickness = 2
+				}
+			):Play()
+		end
 	end
-)
+end)
 
 --==================================================
 -- DRAG SYSTEM
@@ -1032,12 +949,10 @@ end)
 
 UserInputService.InputChanged:Connect(function(input)
 
-	if not dragging then
-		return
-	end
-
-	if input.UserInputType == Enum.UserInputType.MouseMovement
-		or input.UserInputType == Enum.UserInputType.Touch then
+	if dragging and (
+		input.UserInputType == Enum.UserInputType.MouseMovement
+		or input.UserInputType == Enum.UserInputType.Touch
+	) then
 
 		local delta = input.Position - dragStart
 
@@ -1072,15 +987,12 @@ UserInputService.InputBegan:Connect(function(input, processed)
 	if input.KeyCode == Enum.KeyCode.RightShift then
 
 		Main.Visible = not Main.Visible
-
-		if Main.Visible then
-			Notify("INTERFACE", "Cyber interface opened.", 2)
-		end
+		OpenButton.Visible = not Main.Visible
 	end
 end)
 
 --==================================================
--- GLITCH EFFECT
+-- GLITCH
 --==================================================
 
 task.spawn(function()
@@ -1089,24 +1001,21 @@ task.spawn(function()
 
 		if Config.Glitch and Main.Visible then
 
-			local originalPosition = Main.Position
+			local old = Main.Position
 
 			Main.Position = UDim2.new(
-				originalPosition.X.Scale,
-				originalPosition.X.Offset + math.random(-2, 2),
-				originalPosition.Y.Scale,
-				originalPosition.Y.Offset + math.random(-1, 1)
+				old.X.Scale,
+				old.X.Offset + math.random(-2, 2),
+				old.Y.Scale,
+				old.Y.Offset + math.random(-1, 1)
 			)
 
 			task.wait(0.04)
 
-			Main.Position = originalPosition
+			Main.Position = old
 		end
 	end
 end)
 
-print("================================")
-print(" CYBER // 2077")
-print(" Version:", Config.Version)
-print(" Status: ONLINE")
-print("================================")
+print("CYBER // 2077 v1.2.0 ONLINE")
+print("NO SAVE / NO DATASTORE")
