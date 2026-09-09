@@ -324,7 +324,7 @@ Minimize.BackgroundTransparency = 1
 Minimize.Position = UDim2.new(1, -92, 0, 13)
 Minimize.Size = UDim2.fromOffset(35, 35)
 Minimize.Font = Enum.Font.GothamBold
-Minimize.Text = "â"
+Minimize.Text = "Ã¢ÂÂ"
 Minimize.TextSize = 26
 Minimize.TextColor3 = Config.Text
 Minimize.AutoButtonColor = false
@@ -336,7 +336,7 @@ Close.BackgroundTransparency = 1
 Close.Position = UDim2.new(1, -50, 0, 13)
 Close.Size = UDim2.fromOffset(35, 35)
 Close.Font = Enum.Font.GothamBold
-Close.Text = "Ã"
+Close.Text = "ÃÂ"
 Close.TextSize = 26
 Close.TextColor3 = Config.Text
 Close.AutoButtonColor = false
@@ -719,6 +719,143 @@ local function ColorPicker(y)
 	end)
 end
 
+
+--==================================================
+-- REAL PLAYER / VISUAL FEATURES
+-- Roblox Studio
+--==================================================
+
+local SpeedEnabled = false
+local JumpEnabled = false
+local ESPEnabled = false
+
+local SpeedValue = 50
+local JumpValue = 100
+
+local DEFAULT_WALK_SPEED = 16
+local DEFAULT_JUMP_POWER = 50
+
+local function GetHumanoid()
+	local character = player.Character
+	if not character then
+		return nil
+	end
+
+	return character:FindFirstChildOfClass("Humanoid")
+end
+
+local function SetSpeed(enabled)
+	SpeedEnabled = enabled
+
+	local humanoid = GetHumanoid()
+	if not humanoid then
+		return
+	end
+
+	humanoid.WalkSpeed = enabled and SpeedValue or DEFAULT_WALK_SPEED
+end
+
+local function SetJump(enabled)
+	JumpEnabled = enabled
+
+	local humanoid = GetHumanoid()
+	if not humanoid then
+		return
+	end
+
+	humanoid.UseJumpPower = true
+	humanoid.JumpPower = enabled and JumpValue or DEFAULT_JUMP_POWER
+end
+
+local function RemoveESP()
+	for _, targetPlayer in ipairs(Players:GetPlayers()) do
+		local character = targetPlayer.Character
+		if character then
+			local highlight = character:FindFirstChild("CyberESP")
+			if highlight then
+				highlight:Destroy()
+			end
+		end
+	end
+end
+
+local function AddESP(targetPlayer)
+	if targetPlayer == player then
+		return
+	end
+
+	local character = targetPlayer.Character
+	if not character then
+		return
+	end
+
+	local highlight = character:FindFirstChild("CyberESP")
+
+	if not highlight then
+		highlight = Instance.new("Highlight")
+		highlight.Name = "CyberESP"
+		highlight.Adornee = character
+		highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+		highlight.Parent = character
+	end
+
+	highlight.FillColor = Config.Accent
+	highlight.OutlineColor = Config.Accent
+	highlight.FillTransparency = 0.75
+	highlight.OutlineTransparency = 0
+end
+
+local function SetESP(enabled)
+	ESPEnabled = enabled
+
+	if not enabled then
+		RemoveESP()
+		return
+	end
+
+	for _, targetPlayer in ipairs(Players:GetPlayers()) do
+		AddESP(targetPlayer)
+	end
+end
+
+local function RefreshESP()
+	if not ESPEnabled then
+		return
+	end
+
+	for _, targetPlayer in ipairs(Players:GetPlayers()) do
+		AddESP(targetPlayer)
+	end
+end
+
+Players.PlayerAdded:Connect(function(targetPlayer)
+	targetPlayer.CharacterAdded:Connect(function()
+		task.wait(0.25)
+		RefreshESP()
+	end)
+end)
+
+for _, targetPlayer in ipairs(Players:GetPlayers()) do
+	if targetPlayer ~= player then
+		targetPlayer.CharacterAdded:Connect(function()
+			task.wait(0.25)
+			RefreshESP()
+		end)
+	end
+end
+
+player.CharacterAdded:Connect(function()
+	task.wait(0.25)
+
+	if SpeedEnabled then
+		SetSpeed(true)
+	end
+
+	if JumpEnabled then
+		SetJump(true)
+	end
+end)
+
 --==================================================
 -- TABS
 --==================================================
@@ -773,21 +910,25 @@ PlayerTab.MouseButton1Click:Connect(function()
 	Header("PLAYER SYSTEM")
 
 	Toggle("Sprint", 55, function(state)
-		print("Sprint:", state)
+		SetSpeed(state)
 	end)
 
 	Toggle("Jump Boost", 110, function(state)
-		print("Jump Boost:", state)
+		SetJump(state)
 	end)
 
 	Slider(
 		"Movement Speed",
 		175,
-		1,
+		16,
 		100,
-		50,
+		SpeedValue,
 		function(value)
-			print("Movement Speed:", value)
+			SpeedValue = value
+
+			if SpeedEnabled then
+				SetSpeed(true)
+			end
 		end
 	)
 end)
@@ -803,8 +944,8 @@ VisualTab.MouseButton1Click:Connect(function()
 
 	Header("VISUAL SYSTEM")
 
-	Toggle("Neon Glow", 55, function(state)
-		print("Neon Glow:", state)
+	Toggle("ESP", 55, function(state)
+		SetESP(state)
 	end)
 
 	Toggle("Glitch FX", 110, function(state)
@@ -886,21 +1027,25 @@ ClearContent()
 Header("PLAYER SYSTEM")
 
 Toggle("Sprint", 55, function(state)
-	print("Sprint:", state)
+	SetSpeed(state)
 end)
 
 Toggle("Jump Boost", 110, function(state)
-	print("Jump Boost:", state)
+	SetJump(state)
 end)
 
 Slider(
 	"Movement Speed",
 	175,
-	1,
+	16,
 	100,
-	50,
+	SpeedValue,
 	function(value)
-		print("Movement Speed:", value)
+		SpeedValue = value
+
+		if SpeedEnabled then
+			SetSpeed(true)
+		end
 	end
 )
 
@@ -918,7 +1063,7 @@ OpenButton.Size = UDim2.fromOffset(58, 58)
 OpenButton.BackgroundColor3 = Color3.fromRGB(8, 12, 18)
 OpenButton.BorderSizePixel = 0
 
-OpenButton.Text = "â"
+OpenButton.Text = "Ã¢ÂÂ"
 OpenButton.Font = Enum.Font.GothamBlack
 OpenButton.TextSize = 24
 OpenButton.TextColor3 = Config.Accent
@@ -938,90 +1083,26 @@ IconStroke.Color = Config.Accent
 IconStroke.Thickness = 2
 IconStroke.Parent = OpenButton
 
---==================================================
--- MOBILE CYBER ICON
--- TAP = OPEN
--- DRAG = MOVE
---==================================================
+OpenButton.MouseButton1Click:Connect(function()
 
-local draggingIcon = false
-local movedIcon = false
-local dragStart = nil
-local iconStart = nil
+	Main.Visible = true
+	OpenButton.Visible = false
 
-local DRAG_THRESHOLD = 10
-
-OpenButton.InputBegan:Connect(function(input)
-
-	if input.UserInputType == Enum.UserInputType.Touch
-		or input.UserInputType == Enum.UserInputType.MouseButton1 then
-
-		draggingIcon = true
-		movedIcon = false
-		dragStart = input.Position
-		iconStart = OpenButton.Position
-	end
+	Notify(
+		"CYBER // 2077",
+		"Interface opened.",
+		2
+	)
 end)
 
-UserInputService.InputChanged:Connect(function(input)
-
-	if not draggingIcon then
-		return
-	end
-
-	if input.UserInputType == Enum.UserInputType.Touch
-		or input.UserInputType == Enum.UserInputType.MouseMovement then
-
-		local delta = input.Position - dragStart
-
-		if math.abs(delta.X) > DRAG_THRESHOLD
-			or math.abs(delta.Y) > DRAG_THRESHOLD then
-
-			movedIcon = true
-		end
-
-		OpenButton.Position = UDim2.new(
-			iconStart.X.Scale,
-			iconStart.X.Offset + delta.X,
-			iconStart.Y.Scale,
-			iconStart.Y.Offset + delta.Y
-		)
-	end
-end)
-
-UserInputService.InputEnded:Connect(function(input)
-
-	if input.UserInputType == Enum.UserInputType.Touch
-		or input.UserInputType == Enum.UserInputType.MouseButton1 then
-
-		if draggingIcon and not movedIcon then
-
-			Main.Visible = true
-			OpenButton.Visible = false
-
-			Notify(
-				"CYBER // 2077",
-				"Interface opened.",
-				2
-			)
-		end
-
-		draggingIcon = false
-		dragStart = nil
-		iconStart = nil
-	end
-end)
-
---==================================================
--- WINDOW BUTTONS
---==================================================
-
+-- Ã¢ÂÂ = Ã¡ÂºÂ¨N MENU, vÃ¡ÂºÂ«n giÃ¡Â»Â¯ icon Cyber ÃÂÃ¡Â»Â mÃ¡Â»Â lÃ¡ÂºÂ¡i
 Minimize.MouseButton1Click:Connect(function()
 
 	Main.Visible = false
 	OpenButton.Visible = true
 end)
 
+-- ÃÂ = THOÃÂT HÃ¡ÂºÂ²N GUI
 Close.MouseButton1Click:Connect(function()
 
 	Main.Visible = false
